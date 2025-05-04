@@ -74,7 +74,7 @@ def get_color_scale_limits(full_df):
     full_df['Loomulik iive'] = full_df['Mehed Loomulik iive'] + full_df['Naised Loomulik iive']
     return full_df['Loomulik iive'].min(), full_df['Loomulik iive'].max()
 
-def plot_map(df_merged, year):
+def plot_map(df_merged, year, vmin, vmax):
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     df_merged.plot(
         column='Loomulik iive', 
@@ -89,6 +89,7 @@ def plot_map(df_merged, year):
     plt.axis('off')
     st.pyplot(fig)
 
+
 # ---------------------------
 # STREAMLIT APP
 # ---------------------------
@@ -102,22 +103,24 @@ geo_df = import_geojson()
 vmin, vmax = get_color_scale_limits(df)
 
 if not df.empty:
-    # Filter by selected year
-    year_data = df[df['Aasta'] == int(selected_year)].copy()
+  # Filter by selected year
+  year_data = df[df['Aasta'] == int(selected_year)].copy()
 
     # Sum male and female values
-    year_data['Elussünnid'] = year_data['Mehed Elussünnid'] + year_data['Naised Elussünnid']
-    year_data['Surmad'] = year_data['Mehed Surmad'] + year_data['Naised Surmad']
-    year_data['Loomulik iive'] = year_data['Mehed Loomulik iive'] + year_data['Naised Loomulik iive']
+  year_data['Elussünnid'] = year_data['Mehed Elussünnid'] + year_data['Naised Elussünnid']
+  year_data['Surmad'] = year_data['Mehed Surmad'] + year_data['Naised Surmad']
+  year_data['Loomulik iive'] = year_data['Mehed Loomulik iive'] + year_data['Naised Loomulik iive']
 
     # Merge with GeoJSON
-    df_merged = geo_df.merge(year_data, left_on="MNIMI", right_on="Maakond")
+  df_merged = geo_df.merge(year_data, left_on="MNIMI", right_on="Maakond")
 
     # Show table
-    st.subheader(f"Loomulik iive maakonniti ({selected_year})")
-    st.dataframe(year_data[["Maakond", "Elussünnid", "Surmad", "Loomulik iive"]])
-
+  st.subheader(f"Loomulik iive maakonniti ({selected_year})")
+  st.dataframe(year_data[["Maakond", "Elussünnid", "Surmad", "Loomulik iive"]])
+  #testin
+  st.write(df_merged.head())
     # Show map
-    plot_map(df_merged, selected_year)
+  plot_map(df_merged, selected_year, vmin, vmax)
+
 else:
-    st.warning("Andmeid ei õnnestunud laadida.")
+  st.warning("Andmeid ei õnnestunud laadida.")
