@@ -6,10 +6,13 @@ import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
+# Set page config FIRST before any other Streamlit command
 st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
 
 # ülejäänud Streamlit kood...
-st.title("Tere tulemast!")
+st.title("Sündimus ja suremus Eestis")
+st.write("Tere tulemast Tõnis Reiniku Eesti iibe dashboardile!")
+
 # ---------------------------
 # CONSTANTS
 # ---------------------------
@@ -66,12 +69,10 @@ def import_data():
 def import_geojson():
     return gpd.read_file(GEOJSON_FILE)
 
-# Calculate min/max for color scale once from full dataset
 @st.cache_data
 def get_color_scale_limits(full_df):
     full_df['Loomulik iive'] = full_df['Mehed Loomulik iive'] + full_df['Naised Loomulik iive']
     return full_df['Loomulik iive'].min(), full_df['Loomulik iive'].max()
-
 
 def plot_map(df_merged, year):
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
@@ -88,14 +89,9 @@ def plot_map(df_merged, year):
     plt.axis('off')
     st.pyplot(fig)
 
-
 # ---------------------------
 # STREAMLIT APP
 # ---------------------------
-st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
-
-st.title("Sündimus ja suremus Eestis")
-st.write("Tere tulemast Tõnis Reiniku Eesti iibe dashboardile!")
 
 # Sidebar filter
 selected_year = st.sidebar.selectbox("Vali aasta", list(map(str, range(2014, 2024))), index=9)
@@ -109,7 +105,7 @@ if not df.empty:
     # Filter by selected year
     year_data = df[df['Aasta'] == int(selected_year)].copy()
 
-    # Sum male and female values for births, deaths, and natural increase
+    # Sum male and female values
     year_data['Elussünnid'] = year_data['Mehed Elussünnid'] + year_data['Naised Elussünnid']
     year_data['Surmad'] = year_data['Mehed Surmad'] + year_data['Naised Surmad']
     year_data['Loomulik iive'] = year_data['Mehed Loomulik iive'] + year_data['Naised Loomulik iive']
