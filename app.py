@@ -6,8 +6,10 @@ import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
 
+st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
 
-st.title('Minu dash')
+# ülejäänud Streamlit kood...
+st.title("Tere tulemast!")
 # ---------------------------
 # CONSTANTS
 # ---------------------------
