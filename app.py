@@ -11,7 +11,7 @@ st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
 
 # ülejäänud Streamlit kood...
 st.title("Sündimus ja suremus Eestis")
-st.write("Tere tulemast Tõnis Reiniku Eesti iibe dashboardile!")
+st.write("Tere tulemast Mirjam Reino Eesti iibe dashboardile!")
 
 # ---------------------------
 # CONSTANTS
