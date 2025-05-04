@@ -1,10 +1,10 @@
-import streamlit as st
+'''import streamlit as st
 import requests
 import pandas as pd
 from io import StringIO
 import json
 import geopandas as gpd
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt'''
 
 # Set page config FIRST before any other Streamlit command
 st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
