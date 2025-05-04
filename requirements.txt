@@ -1,0 +1,8 @@
+streamlit
+geopandas
+matplotlib
+pandas
+numpy
+shapely
+fiona
+pyproj
