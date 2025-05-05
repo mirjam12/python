@@ -6,19 +6,20 @@ import json
 import geopandas as gpd
 import matplotlib.pyplot as plt
 try: 
+    
   # Set page config FIRST before any other Streamlit command
   st.set_page_config(page_title="Sündimus ja suremus Eestis", layout="wide")
-
+  
   # ülejäänud Streamlit kood...
   st.title("Sündimus ja suremus Eestis")
   st.write("Tere tulemast Mirjam Reino Eesti iibe dashboardile!")
-
+  
   # ---------------------------
   # CONSTANTS
   # ---------------------------
   STATISTIKAAMETI_API_URL = "https://andmed.stat.ee/api/v1/et/stat/RV032"
   GEOJSON_FILE = "maakonnad.geojson"
-
+  
   JSON_PAYLOAD_STR = """{
     "query": [
       {
@@ -47,7 +48,7 @@ try:
       "format": "csv"
     }
   }"""
-
+  
   # ---------------------------
   # FUNCTIONS
   # ---------------------------
@@ -64,16 +65,16 @@ try:
       else:
           st.error(f"API error: {response.status_code}")
           return pd.DataFrame()
-
+  
   @st.cache_data
   def import_geojson():
       return gpd.read_file(GEOJSON_FILE)
-
+  
   @st.cache_data
   def get_color_scale_limits(full_df):
       full_df['Loomulik iive'] = full_df['Mehed Loomulik iive'] + full_df['Naised Loomulik iive']
       return full_df['Loomulik iive'].min(), full_df['Loomulik iive'].max()
-
+  
   def plot_map(df_merged, year, vmin, vmax):
       fig, ax = plt.subplots(1, 1, figsize=(12, 8))
       df_merged.plot(
@@ -88,32 +89,32 @@ try:
       plt.title(f'Loomulik iive maakonniti aastal {year}')
       plt.axis('off')
       st.pyplot(fig)
-
-
+  
+  
   # ---------------------------
   # STREAMLIT APP
   # ---------------------------
-
+  
   # Sidebar filter
   selected_year = st.sidebar.selectbox("Vali aasta", list(map(str, range(2014, 2024))), index=9)
-
+  
   # Load data
   df = import_data()
   geo_df = import_geojson()
   vmin, vmax = get_color_scale_limits(df)
-
+  
   if not df.empty:
     # Filter by selected year
     year_data = df[df['Aasta'] == int(selected_year)].copy()
-
+  
       # Sum male and female values
     year_data['Elussünnid'] = year_data['Mehed Elussünnid'] + year_data['Naised Elussünnid']
     year_data['Surmad'] = year_data['Mehed Surmad'] + year_data['Naised Surmad']
     year_data['Loomulik iive'] = year_data['Mehed Loomulik iive'] + year_data['Naised Loomulik iive']
-
+  
       # Merge with GeoJSON
     df_merged = geo_df.merge(year_data, left_on="MNIMI", right_on="Maakond")
-
+  
       # Show table
     st.subheader(f"Loomulik iive maakonniti ({selected_year})")
     st.dataframe(year_data[["Maakond", "Elussünnid", "Surmad", "Loomulik iive"]])
@@ -121,7 +122,7 @@ try:
     st.write(df_merged.head())
       # Show map
     plot_map(df_merged, selected_year, vmin, vmax)
-
+  
   else:
     st.warning("Andmeid ei õnnestunud laadida.")
 except Exception as e:
