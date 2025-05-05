@@ -1,5 +1,5 @@
 streamlit
-geopandas
+geopandas==0.14.1
 matplotlib
 pandas
 numpy
